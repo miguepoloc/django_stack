@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import exceptions, serializers
 from rest_framework.exceptions import ValidationError
 
+from user.models import User
+
 # Get the User model
 UserModel = get_user_model()
 
@@ -20,13 +22,13 @@ class UserSerializer(serializers.ModelSerializer):
         Class for metadata.
         """
 
-        model = get_user_model()
-        fields = ['email', 'password', 'phone_number', 'document']
+        model = User
+        fields = "__all__"
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 
     def create(self, validated_data):
         """Create and return a user with encrypted password."""
-        return get_user_model().objects.create_user(**validated_data)
+        return User.objects.create_user(**validated_data)
 
     def update(self, instance, validated_data):
         """Update and return user."""

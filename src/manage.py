@@ -5,7 +5,7 @@ import sys
 
 from dotenv import load_dotenv
 
-load_dotenv('../.env.local', verbose=True)
+load_dotenv('../.env', verbose=True)
 
 
 def main():

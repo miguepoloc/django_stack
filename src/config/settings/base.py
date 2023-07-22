@@ -34,6 +34,7 @@ THIRD_APPS = [
     'dj_rest_auth.registration',
     "anymail",
     "django_filters",
+    "simple_history",
 ]
 SITE_ID = 1
 
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -114,7 +116,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
-AUTH_USER_MODEL = "core.User"
+AUTH_USER_MODEL = "user.User"
 
 REST_AUTH = {'USE_JWT': True, 'JWT_AUTH_COOKIE': 'jwt-auth', 'JWT_AUTH_REFRESH_COOKIE': 'jwt-token'}
 

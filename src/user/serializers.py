@@ -28,6 +28,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Create and return a user with encrypted password."""
+        if validated_data.get('email'):
+            validated_data['email'] = validated_data['email'].lower()
         return User.objects.create_user(**validated_data)
 
     def update(self, instance, validated_data):
@@ -40,6 +42,24 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
 
         return user
+
+    def to_representation(self, instance):
+        """
+        Method for representation of the user.
+        """
+        if not instance.is_active:
+            raise ValidationError({'error': 'This user is not active'})
+        data = {
+            'id': instance.id,
+            'email': instance.email,
+            'first_name': instance.first_name,
+            'last_name': instance.last_name,
+            'document': instance.document,
+            'phone_number': instance.phone_number,
+            'is_active': instance.is_active,
+            'created_at': instance.created_at,
+        }
+        return data
 
 
 class CustomUserDetailSerializer(serializers.ModelSerializer):

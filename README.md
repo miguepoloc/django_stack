@@ -16,7 +16,6 @@
 1. Clone repository:
 
 - `git clone git@github.com:miguepoloc/django_stack.git`
-
 - `cd django_stack`
 
 ### Run With Docker
@@ -28,7 +27,6 @@
 3. docker-compose
 
 - `sudo docker-compose -f docker-compose.dev.yml build`
-
 - `sudo docker-compose -f docker-compose.dev.yml up`
 
 ### Run With Virtualenv
@@ -45,7 +43,7 @@
 
 4. Install requirements
 
-- `pip install -r /requirements/dev.txt`
+- `pip install -r /requirements.txt`
 
 1. Run
 
@@ -57,7 +55,6 @@
 ### With Docker
 
 - `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py makemigrations"`
-
 - `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py migrate"`
 
 ### With Virtualenv
@@ -89,5 +86,7 @@
 - `python manage.py test`
 
 ## Linter
+
 Use pre-commit to run linter before commit, the command is:
+
 - `pre-commit run --all-files`

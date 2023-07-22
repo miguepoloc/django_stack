@@ -3,8 +3,7 @@ FROM python:3.9-alpine3.13
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-COPY ./requirements/base.txt /tmp/requirements/base.txt
-COPY ./requirements/dev.txt /tmp/requirements/dev.txt
+COPY ./requirements.txt /tmp/requirements.txt
 
 COPY ./src /src
 WORKDIR /src
@@ -21,7 +20,7 @@ RUN python -m venv /py && \
     apk add --update --no-cache --virtual .tmp-build-deps \
     # List packages to install psycopg2
     build-base postgresql-dev musl-dev && \
-    /py/bin/pip install -r /tmp/requirements/dev.txt && \
+    /py/bin/pip install -r /tmp/requirements.txt && \
     # delete tmp folder
     rm -rf /tmp && \
     # delete packages listed on line 20

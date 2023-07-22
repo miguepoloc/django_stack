@@ -5,21 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from simple_history.models import HistoricalRecords
 
-
-class TimeStampedModel(models.Model):
-    """
-    Model for timestamp, created_at and updated_at.
-    """
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        """
-        Class for metadata.
-        """
-
-        abstract = True
+from core.models import BaseModel
 
 
 class UserManager(BaseUserManager):
@@ -48,7 +34,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
+class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     """User in the system."""
 
     email = models.EmailField(max_length=255, unique=True)
@@ -59,7 +45,6 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
         max_length=50,
         blank=True,
     )
-    is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     profile_image = models.CharField(max_length=250, blank=True)

@@ -10,7 +10,7 @@
         "DB_PORT": "5432",
         "DB_HOST": "localhost"
       },
-      "args": ["test", "attorneys", "surveys", "user", "symptoms", "clients"],
+      "args": ["test", "--noinput"],
       "django": true,
       "justMyCode": true
     },

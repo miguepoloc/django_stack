@@ -7,7 +7,7 @@
       "program": "${workspaceFolder}\\src\\manage.py",
       "envFile": "${workspaceFolder}/.env",
       "env": {
-        "DB_PORT": "5433",
+        "DB_PORT": "5432",
         "DB_HOST": "localhost"
       },
       "args": ["test", "attorneys", "surveys", "user", "symptoms", "clients"],
@@ -21,7 +21,7 @@
       "program": "${workspaceFolder}\\src\\manage.py",
       "envFile": "${workspaceFolder}/.env",
       "env": {
-        "DB_PORT": "5433",
+        "DB_PORT": "5432",
         "DB_HOST": "localhost"
       },
       "args": ["runserver"],
@@ -35,7 +35,7 @@
       "program": "${workspaceFolder}\\src\\manage.py",
       "envFile": "${workspaceFolder}/.env",
       "env": {
-        "DB_PORT": "5433",
+        "DB_PORT": "5432",
         "DB_HOST": "localhost"
       },
       "args": ["makemigrations"],
@@ -49,7 +49,7 @@
       "program": "${workspaceFolder}\\src\\manage.py",
       "envFile": "${workspaceFolder}/.env",
       "env": {
-        "DB_PORT": "5433",
+        "DB_PORT": "5432",
         "DB_HOST": "localhost"
       },
       "args": ["migrate"],

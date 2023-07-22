@@ -1,7 +1,6 @@
 import os
 
 from .base import *  # noqa
-from .base import INSTALLED_APPS, MIDDLEWARE
 
 DEBUG = False
 

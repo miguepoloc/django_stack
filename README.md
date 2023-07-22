@@ -1,9 +1,8 @@
-# Stack for Django Projects by
+# Stack for Django Projects by Miguel Polo
 
 ## Features
 
-- Swagger
-- Django Toolbar (only local environment)
+- Swagger and postman are used for documentation
 
 ## Requirements
 
@@ -28,17 +27,17 @@
 
 3. docker-compose
 
-- `sudo docker-compose -f docker-compose.local.yml build`
+- `sudo docker-compose -f docker-compose.dev.yml build`
 
-- `sudo docker-compose -f docker-compose.local.yml up`
+- `sudo docker-compose -f docker-compose.dev.yml up`
 
 ### Run With Virtualenv
 
-2. Copy `.env.local.example` to `.env.local` and custom:
+1. Copy `.env.example` to `.env` and custom:
 
-- `cp .env.local.example .env.local`
+- `cp .env.example .env`
 
-3. Create virtualenv and activate
+1. Create virtualenv and activate
 
 - `python -m venv venv`
 - `source venv/bin/activate` _(Linux)_
@@ -46,7 +45,7 @@
 
 4. Install requirements
 
-- `pip install -r /requirements/local.txt`
+- `pip install -r /requirements/dev.txt`
 
 1. Run
 
@@ -57,9 +56,9 @@
 
 ### With Docker
 
-- `sudo docker-compose -f docker-compose.local.yml run --rm django sh -c "python manage.py makemigrations"`
+- `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py makemigrations"`
 
-- `sudo docker-compose -f docker-compose.local.yml run --rm django sh -c "python manage.py migrate"`
+- `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py migrate"`
 
 ### With Virtualenv
 
@@ -71,7 +70,7 @@
 
 ### With Docker
 
-- `sudo docker-compose -f docker-compose.local.yml run --rm django sh -c "python manage.py startapp appname"`
+- `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py startapp appname"`
 
 ### With Virtualenv
 
@@ -82,7 +81,7 @@
 
 ### With Docker
 
-- `sudo docker-compose -f docker-compose.local.yml run --rm django sh -c "python manage.py test"`
+- `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py test"`
 
 ### With Virtualenv
 
@@ -90,16 +89,5 @@
 - `python manage.py test`
 
 ## Linter
-
-### With Docker
-
-- `sudo docker-compose -f docker-compose.local.yml run --rm django sh -c "flake8"`
-
-### With Virtualenv
-
-- `cd src`
-- `flake8`
-
-## Authentication
-
-- See /docs
+Use pre-commit to run linter before commit, the command is:
+- `pre-commit run --all-files`

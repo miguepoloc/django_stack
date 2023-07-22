@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
 COPY ./requirements/base.txt /tmp/requirements/base.txt
-COPY ./requirements/develop.txt /tmp/requirements/develop.txt
+COPY ./requirements/production.txt /tmp/requirements/production.txt
 
 COPY ./src /src
 WORKDIR /src

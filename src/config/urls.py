@@ -1,3 +1,6 @@
+"""
+File for URL configuration.
+"""
 import os
 
 from django.contrib import admin
@@ -13,7 +16,7 @@ urlpatterns = [
 ]
 
 CONFIG_SETTINGS = os.getenv("CONFIG_SETTINGS")
-if CONFIG_SETTINGS == "config.settings.local":
+if CONFIG_SETTINGS == "config.settings.dev":
     urlpatterns += [
         path('__debug__/', include('debug_toolbar.urls')),
     ]

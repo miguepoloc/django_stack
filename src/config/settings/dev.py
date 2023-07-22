@@ -1,3 +1,4 @@
+import os
 import socket  # only if you haven't already imported this
 
 from .base import *  # noqa
@@ -28,8 +29,9 @@ SWAGGER_SETTINGS = {
     ],
 }
 
+MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 MIDDLEWARE.insert(1, 'corsheaders.middleware.CorsMiddleware')
-INSTALLED_APPS += ['corsheaders']
+INSTALLED_APPS += ['debug_toolbar', 'corsheaders']
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = ()

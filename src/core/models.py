@@ -1,12 +1,23 @@
+"""
+Models for core app.
+"""
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
 
 class TimeStampedModel(models.Model):
+    """
+    Model for timestamp, created_at and updated_at.
+    """
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        """
+        Class for metadata.
+        """
+
         abstract = True
 
 
@@ -43,12 +54,15 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     state = models.BooleanField(default=True, null=True)
-    document = models.CharField(max_length=50, null=True)
-    phone_number = models.CharField(max_length=50, blank=True, null=True)
+    document = models.CharField(max_length=50, blank=True)
+    phone_number = models.CharField(
+        max_length=50,
+        blank=True,
+    )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    profile_image = models.CharField(max_length=250, null=True)
+    profile_image = models.CharField(max_length=250, blank=True)
 
     objects = UserManager()
 

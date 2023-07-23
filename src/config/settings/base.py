@@ -1,6 +1,7 @@
 import os
-from datetime import timedelta
 from pathlib import Path
+
+from modules.simple_jwt import SIMPLE_JWT
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,11 +29,12 @@ LOCAL_APPS = ["core", "user"]
 
 THIRD_APPS = [
     "drf_spectacular",
+    'rest_framework_simplejwt',
     "rest_framework",
-    "rest_framework.authtoken",
+    "rest_framework.authtoken",  # TODO: Review if you use dj_rest_auth
     "dj_rest_auth",
-    'dj_rest_auth.registration',
-    "anymail",
+    'dj_rest_auth.registration',  # TODO: Review if you use dj_rest_auth
+    "anymail",  # TODO: Review if you use sendgrid
     "django_filters",
     "simple_history",
 ]
@@ -111,16 +113,34 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_AUTHENTICATION_CLASSES': ('dj_rest_auth.jwt_auth.JWTCookieAuthentication',),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
+
+# Documentation with swagger and drf_spectacular
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Stack Django',
+    'DESCRIPTION': 'Stack Django basic with login, singup, send email, send sms, and more.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
+}
+
+
+# Authentification with dj_rest_auth and simple_jwt
 AUTH_USER_MODEL = "user.User"
 
 REST_AUTH = {'USE_JWT': True, 'JWT_AUTH_COOKIE': 'jwt-auth', 'JWT_AUTH_REFRESH_COOKIE': 'jwt-token'}
+SIMPLE_JWT = SIMPLE_JWT
 
 
+# Email with sendgrid and anymail
 EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -128,14 +148,12 @@ AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
-
-
-SIMPLE_JWT = {"ACCESS_TOKEN_LIFETIME": timedelta(days=30), "REFRESH_TOKEN_LIFETIME": timedelta(days=30)}
-
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
-
 ANYMAIL = {
     "SENDGRID_API_KEY": os.getenv("SENDGRID_API_KEY"),
 }
+
+
+# SMS with twilio
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")

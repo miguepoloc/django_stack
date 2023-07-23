@@ -30,16 +30,12 @@ SWAGGER_SETTINGS = {
 }
 
 MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
-MIDDLEWARE.insert(1, 'corsheaders.middleware.CorsMiddleware')
-INSTALLED_APPS += ['debug_toolbar', 'corsheaders']
+INSTALLED_APPS += ['debug_toolbar']
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = ()
-CORS_ALLOW_METHODS = (
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-)

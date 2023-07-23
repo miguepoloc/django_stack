@@ -26,8 +26,8 @@
 
 3. docker-compose
 
-- `sudo docker-compose -f docker-compose.dev.yml build`
-- `sudo docker-compose -f docker-compose.dev.yml up`
+- `docker-compose -f docker-compose.dev.yml build`
+- `docker-compose -f docker-compose.dev.yml up`
 
 ### Run With Virtualenv
 
@@ -54,8 +54,8 @@
 
 ### With Docker
 
-- `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py makemigrations"`
-- `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py migrate"`
+- `docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py makemigrations"`
+- `docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py migrate"`
 
 ### With Virtualenv
 
@@ -67,7 +67,7 @@
 
 ### With Docker
 
-- `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py startapp appname"`
+- `docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py startapp appname"`
 
 ### With Virtualenv
 
@@ -78,12 +78,39 @@
 
 ### With Docker
 
-- `sudo docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py test"`
+- `docker-compose -f docker-compose.dev.yml run --rm django sh -c "python manage.py test"`
 
 ### With Virtualenv
 
 - `cd src`
 - `python manage.py test`
+
+## Test coverage
+
+### With Docker
+
+- `docker-compose -f docker-compose.local.yml run --rm django sh -c "coverage run --source=. manage.py test --noinput"`
+
+To see the report:
+
+- `docker-compose -f docker-compose.local.yml run --rm django sh -c "coverage report"`
+
+To generate html report:
+
+- `docker-compose -f docker-compose.local.yml run --rm django sh -c "coverage html"`
+
+### With Virtualenv
+
+- `cd src`
+- `coverage run --source=. manage.py test --noinput`
+
+To see the report:
+
+- `coverage report`
+
+To generate html report:
+
+- `coverage html`
 
 ## Linter
 

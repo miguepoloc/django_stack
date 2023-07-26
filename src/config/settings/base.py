@@ -24,7 +24,7 @@ BASE_APPS = [
     "django.contrib.sites",
 ]
 
-LOCAL_APPS = ["core", "user"]
+LOCAL_APPS = ["core", "user", "authentication"]
 
 THIRD_APPS = [
     'corsheaders',
@@ -37,6 +37,7 @@ THIRD_APPS = [
     "simple_history",
     "drf_spectacular",
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 SITE_ID = 1
 
@@ -114,10 +115,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
@@ -139,13 +137,13 @@ SPECTACULAR_SETTINGS = {
 
 # Authentification with dj_rest_auth and simple_jwt
 AUTH_USER_MODEL = "user.User"
+SITE_ID = 1
 
-REST_AUTH = {'USE_JWT': True, 'JWT_AUTH_COOKIE': 'jwt-auth', 'JWT_AUTH_REFRESH_COOKIE': 'jwt-token'}
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=60),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
     "ALGORITHM": "HS256",
     "SIGNING_KEY": os.getenv("SECRET_KEY"),

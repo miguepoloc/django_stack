@@ -1,6 +1,7 @@
 """
 File with the user views.
 """
+
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -79,7 +80,7 @@ class UserDetailView(APIView):
     View for return the user detail.
     """
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         """

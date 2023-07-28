@@ -2,11 +2,15 @@
 File with the user views.
 """
 
+import os
+
+from django.template.loader import render_to_string
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.utils import send_email
 from user.models import User
 from user.serializers import UserSerializer
 
@@ -30,8 +34,16 @@ class UserView(APIView):
                 )
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+            try:
+                serializer.save()
+
+                context = {"first_name": request.data['first_name'], "url_frontend": os.environ.get("URL_FRONTEND")}
+                html_content = render_to_string("welcome.html", context)
+                send_email("Welcome to Name_APP", html_content, request.data['email'], request.data['first_name'])
+
+                return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({"message": "Error creating user", "error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):

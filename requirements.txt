@@ -15,3 +15,5 @@ psycopg2-binary==2.9.6
 python-dotenv==1.0.0
 requests==2.30.0
 tox==4.6.4
+twilio-8.5.0
+sib-api-v3-sdk @ git+https://github.com/sendinblue/APIv3-python-library.git@9a5807c149db7855eca346b1d7829a96481f495c

@@ -1,4 +1,5 @@
 boto3==1.26.118
+boto3==1.26.118
 coverage==7.2.7
 dj-rest_auth==4.0.1
 django-anymail==9.1
@@ -14,6 +15,5 @@ pre-commit==3.3.3
 psycopg2-binary==2.9.6
 python-dotenv==1.0.0
 requests==2.30.0
+sib-api-v3-sdk==7.6.0
 tox==4.6.4
-twilio-8.5.0
-sib-api-v3-sdk @ git+https://github.com/sendinblue/APIv3-python-library.git@9a5807c149db7855eca346b1d7829a96481f495c

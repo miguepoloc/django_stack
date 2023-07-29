@@ -17,14 +17,27 @@ from user.serializers import UserSerializer
 
 class UserView(APIView):
     """
-    View for list and create user.
+    A view for handling user creation and update requests.
+
+    This view allows users to be created and updated. It performs validation checks to ensure that the email address
+    provided is unique and sends a welcome email to the user upon successful creation.
+
+    Methods:
+    - post: Create a new user.
+    - put: Update an existing user.
     """
 
     permission_classes = [AllowAny]
 
     def post(self, request):
         """
-        Create a user.
+        Create a new user.
+
+        This method handles HTTP POST requests to create a new user. It performs validation checks to ensure that the
+        email address provided is unique. Upon successful creation, it sends a welcome email to the user.
+
+        Returns:
+        - Response: A response indicating the success or failure of the user creation.
         """
         if request.data.get('email'):
             user = User.objects.filter(email=request.data['email']).first()
@@ -39,7 +52,8 @@ class UserView(APIView):
 
                 context = {"first_name": request.data['first_name'], "url_frontend": os.environ.get("URL_FRONTEND")}
                 html_content = render_to_string("welcome.html", context)
-                send_email("Welcome to Name_APP", html_content, request.data['email'], request.data['first_name'])
+                to_send_email = [{"email": request.data['email'], "name": request.data['first_name']}]
+                send_email("Welcome to Name_APP", html_content, to_send_email)
 
                 return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
             except Exception as e:
@@ -48,7 +62,13 @@ class UserView(APIView):
 
     def put(self, request):
         """
-        Update a user.
+        Update an existing user.
+
+        This method handles HTTP PUT requests to update an existing user. It performs validation checks to ensure that
+        the user being updated exists and that the email address provided is unique.
+
+        Returns:
+        - Response: A response indicating the success or failure of the user update.
         """
         user_id = self.request.data.get('id', self.request.user.id)
         if not user_id:
@@ -73,14 +93,18 @@ class UserView(APIView):
 
 class UserListView(APIView):
     """
-    View for list users
+    A view for retrieving a list of all users.
+    Requires authentication to access the view.
     """
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         """
-        Get all users.
+        Handles the GET request and retrieves all users.
+
+        Returns:
+            A Response object with the serialized user data and a status code of 200.
         """
         user = User.objects.all()
         serializer = UserSerializer(user, many=True)
@@ -89,14 +113,25 @@ class UserListView(APIView):
 
 class UserDetailView(APIView):
     """
-    View for return the user detail.
+    A view that returns the details of a user.
+
+    Requires authentication and can receive a user id as a query parameter or use the id of the authenticated user.
+    It returns a serialized representation of the user object if it exists, or an error message if it doesn't.
     """
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         """
-        Get details of user logged in.
+        Retrieve the details of the user logged in.
+
+        If a user id is provided as a query parameter, it will retrieve the user with that id.
+        If no user id is provided, it will retrieve the user with the id of the authenticated user.
+
+        Returns:
+        - If the user is found, it returns a serialized representation of the user object with a status code of 200.
+        - If the user id is not found, it returns an error message with a status code of 400.
+        - If the user with the provided id is not found, it returns an error message with a status code of 404.
         """
         user_id = self.request.query_params.get('id', self.request.user.id)
         if not user_id:

@@ -45,6 +45,14 @@ class UserView(APIView):
                 return Response(
                     {"message": "Error creating user, email already exists"}, status=status.HTTP_400_BAD_REQUEST
                 )
+        if request.data.get('phone_number') and request.data.get('code_phone'):
+            user = User.objects.filter(
+                phone_number=request.data['phone_number'], code_phone=request.data['code_phone']
+            ).first()
+            if user:
+                return Response(
+                    {"message": "Error creating user, phone number already exists"}, status=status.HTTP_400_BAD_REQUEST
+                )
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             try:
@@ -81,6 +89,14 @@ class UserView(APIView):
             if user and user.id != user_id:
                 return Response(
                     {"message": "Error updating user, email already exists"}, status=status.HTTP_400_BAD_REQUEST
+                )
+        if request.data.get('phone_number') and request.data.get('code_phone'):
+            user = User.objects.filter(
+                phone_number=request.data['phone_number'], code_phone=request.data['code_phone']
+            ).first()
+            if user and user.id != user_id:
+                return Response(
+                    {"message": "Error updating user, phone number already exists"}, status=status.HTTP_400_BAD_REQUEST
                 )
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():

@@ -4,7 +4,7 @@ File that contains the urls of the authentication app.
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from authentication.views import LoginView, LogoutAllView, LogoutView, SendOTPView, LoginOTPView
+from authentication.views import LoginOTPView, LoginView, LogoutAllView, LogoutView, SendOTPView
 
 APP_NAME = 'user'
 

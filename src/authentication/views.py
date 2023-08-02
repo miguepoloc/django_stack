@@ -1,11 +1,8 @@
 """
 File with the authentication views.
 """
-import os
 import secrets
-from datetime import datetime, timedelta
 
-from dj_rest_auth.views import LoginView
 from django.template.loader import render_to_string
 from django.utils import timezone
 from rest_framework import status
@@ -19,7 +16,7 @@ from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from authentication.models import OTP
-from authentication.serializers import LoginSerializer, OTPLoginSerializer
+from authentication.serializers import LoginSerializer
 from core.utils import send_email
 from user.models import User
 
@@ -256,14 +253,29 @@ class SendOTPView(APIView):
         return Response({'success': True, 'message': 'Code sent successfully!'})
 
 
-class LoginOTPView(LoginView):
+class LoginOTPView(APIView):
     """
-    View for logging in with an OTP (One-Time Password) code.
+    A class-based view for handling user authentication using One-Time Password (OTP) codes.
+
+    This view allows users to log in by providing their email and OTP code. Upon successful login,
+    it returns a JSON response with the user's details and tokens.
+
+    Methods:
+    - post(): Handles the POST request for user authentication using OTP.
+    - _handle_missing_fields(): Helper method to handle missing email and OTP fields.
+    - _handle_otp_login(): Helper method to handle OTP login process.
     """
 
     def post(self, request):
         """
-        Login with an OTP code.
+        Handles the POST request for user authentication using OTP.
+
+        Args:
+        - request: The HTTP request object.
+
+        Returns:
+        - response: The JSON response containing the user's details and tokens.
+        - status_code: The HTTP status code of the response.
         """
         email = request.data.get('email', None)
         otp = request.data.get('otp', None)
@@ -278,8 +290,15 @@ class LoginOTPView(LoginView):
 
     def _handle_missing_fields(self, email, otp):
         """
-        Function to handle missing fields.
-        Phone number and OTP are required, if either is missing, return an error.
+        Helper method to handle missing email and OTP fields.
+
+        Args:
+        - email: The email provided by the user.
+        - otp: The OTP code provided by the user.
+
+        Returns:
+        - response: The JSON response containing the error message.
+        - status_code: The HTTP status code of the response.
         """
         missing_fields = []
         if not email:
@@ -295,8 +314,15 @@ class LoginOTPView(LoginView):
 
     def _handle_otp_login(self, email, otp):
         """
-        Function to handle OTP login.
-        This function checks if the user exists, is active, and if the OTP is valid.
+        Helper method to handle OTP login process.
+
+        Args:
+        - email: The email provided by the user.
+        - otp: The OTP code provided by the user.
+
+        Returns:
+        - response: The JSON response containing the user's details and tokens.
+        - status_code: The HTTP status code of the response.
         """
         user = User.objects.filter(email=email).first()
         if not user:
@@ -306,49 +332,39 @@ class LoginOTPView(LoginView):
             response = {'error': 'User is not active'}
             status_code = status.HTTP_400_BAD_REQUEST
         else:
-            response_data = OTPLoginSerializer(data={'email': email, 'otp': otp})
-            if not response_data.is_valid():
-                response = response_data.errors
+            # Check OTP
+            otp = OTP.objects.filter(user=user, code=otp).first()
+            if not otp:
+                response = {'error': 'Invalid OTP'}
+                status_code = status.HTTP_400_BAD_REQUEST
+            elif otp.is_expired():
+                response = {'error': 'OTP is expired'}
                 status_code = status.HTTP_400_BAD_REQUEST
             else:
-                response = response_data.data
-                status_code = status.HTTP_200_OK
+                if otp.is_active:
+                    access_token = str(AccessToken.for_user(user))
+                    refresh_token = str(RefreshToken.for_user(user))
 
-            # otp = OTP.objects.filter(user=user, code=otp).first()
-            # if not otp:
-            #     response = {'error': 'Invalid OTP'}
-            #     status_code = status.HTTP_400_BAD_REQUEST
-            # elif otp.is_expired:
-            #     response = {'error': 'OTP is expired'}
-            #     status_code = status.HTTP_400_BAD_REQUEST
-            # else:
-            #     # Generate token
-            #     token = AccessToken.for_user(user)
-            #     # Return token
-            #     response = {'token': str(token)}
-            #     status_code = status.HTTP_200_OK
+                    otp.is_active = False
+                    otp.save()
+
+                    response = {
+                        "message": "User logged in successfully",
+                        "user_detail": {
+                            "user_id": user.id,
+                            "email": user.email,
+                            "name": user.first_name + " " + user.last_name,
+                        },
+                        "token": {
+                            "refresh_token": refresh_token,
+                            "access_token": access_token,
+                        },
+                        "status": 200,
+                    }
+
+                    status_code = status.HTTP_200_OK
+                else:
+                    response = {'error': 'OTP is not active, please request a new one.'}
+                    status_code = status.HTTP_400_BAD_REQUEST
+
         return response, status_code
-
-        # try:
-        #     user = User.objects.get(email=email)
-        #     if user.is_active is False:
-        #         response = {'error': 'User is not active'}
-        #         status_code = status.HTTP_400_BAD_REQUEST
-        #     else:
-        #         serializer = OTPLoginSerializer(data={'email': email, 'otp': otp})
-        #         if serializer.is_valid():
-        #             response_data = serializer.data
-        #             # Generate token
-        #             token = AccessToken.for_user(user)
-        #             # Return token
-        #             response_data['token'] = str(token)
-        #             response = response_data
-        #             status_code = status.HTTP_200_OK
-
-        #         response = {'error': serializer.errors}
-        #         status_code = status.HTTP_400_BAD_REQUEST
-        #     return response, status_code
-
-        # except User.DoesNotExist:
-        #     response = {'error': 'Email not registered'}
-        #     status_code = status.HTTP_404_NOT_FOUND
